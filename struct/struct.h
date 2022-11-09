@@ -4,9 +4,9 @@
 #include "..\lib\flog.h"
 
 // DEFINE NDEBUG TO DISABLE LOGS
-//Constants to specify NEW_STRUCT element type and element output mode
+//Constants to specify Tree element type and element output mode
 
-#define ELEM_TYPE int ///< Type of element a NEW_STRUCT operates with
+#define ELEM_TYPE int ///< Type of element a Tree operates with
 #define OUT_FORM "%d" ///< Output format for printf functions
 
 //end of block
@@ -28,71 +28,71 @@
 #define isPoison(var) isPoisonInside (&var, sizeof (var)) ///< Macros for checking for poison
 
 #ifndef NDEBUG
-#define NEW_STRUCTDump(strct) NEW_STRUCTDumpInside (&strct, #strct, __FILE__, __FUNCTION__, __LINE__) ///< NEW_STRUCT dump macros
+#define TreeDump(tree) TreeDumpInside (&tree, #tree, __FILE__, __FUNCTION__, __LINE__) ///< Tree dump macros
 #else
-#define NEW_STRUCTDump(strct) ;
+#define TreeDump(tree) ;
 #endif
 //endof inside defines
 
-/// @brief Describes errors within NEW_STRUCT
-enum NEW_STRUCTErrorCodes {
+/// @brief Describes errors within Tree
+enum TreeErrorCodes {
     ok                   = 0,    ///< All ok
     POISON_ACCESS        = 1<<0, ///< One or more struct elements is poison
     BAD_CAN_L            = 1<<1, ///< Dead left cannary of structure
     BAD_CAN_R            = 1<<2, ///< Dead right cannary of structure
-    BAD_DATA_CAN_L       = 1<<3, ///< Dead left cannary of  DATA
-    BAD_DATA_CAN_R       = 1<<4, ///< Dead right cannary of DATA
-    NULL_DATA_PTR        = 1<<5, ///< NULL ptr for DATA
-    NULL_DATA_CAN_L_PTR  = 1<<6, ///< NULL ptr for left  DATA cannary
-    NULL_DATA_CAN_R_PTR  = 1<<7, ///< NULL ptr for right DATA cannary
+    BAD_root_CAN_L       = 1<<3, ///< Dead left cannary of  root
+    BAD_root_CAN_R       = 1<<4, ///< Dead right cannary of root
+    NULL_root_PTR        = 1<<5, ///< NULL ptr for root
+    NULL_root_CAN_L_PTR  = 1<<6, ///< NULL ptr for left  root cannary
+    NULL_root_CAN_R_PTR  = 1<<7, ///< NULL ptr for right root cannary
     POISONED_ERRCOD      = 1<<9, ///< Errcod variable is poisoned; Ususally means that struct has been destructed
     WRONG_HASH           = 1<<10 ///< Hash was changed without any changes from specified function
 };
 
-/// @brief Stores a NEW_STRUCT with several support variables
-struct NEW_STRUCT {
+/// @brief Stores a Tree with several support variables
+struct Tree {
 
     unsigned int  canL      = 0xDEADBEEF; ///< left cannary of struct
     unsigned int  hash      = 0;          ///< hash value
     size_t        errCode   = ok;         ///< error code
-    void*         DATA      = NULL;       ///< Ptr to DATA
-    unsigned int* DATACanL  = NULL;       ///< left cannary of DATA
-    unsigned int* DATACanR  = NULL;       ///< right cannary of DATA
+    void*         root      = NULL;       ///< Ptr to root
+    unsigned int* rootCanL  = NULL;       ///< left cannary of root
+    unsigned int* rootCanR  = NULL;       ///< right cannary of root
     unsigned int  canR      = 0xD34DB33F; ///< right cannary of struct
 };
 
-/// @brief Constructs a NEW_STRUCT var
-/// @param strct ptr to a var to construct
-void NEW_STRUCTCtor (NEW_STRUCT* strct);
+/// @brief Constructs a Tree var
+/// @param tree ptr to a var to construct
+void TreeCtor (Tree* tree);
 
-/// @brief Destroys a NEW_STRUCT var.
-/// @param strct ptr to a destroyable variable
-void NEW_STRUCTDtor (NEW_STRUCT* strct);
+/// @brief Destroys a Tree var.
+/// @param tree ptr to a destroyable variable
+void TreeDtor (Tree* tree);
 
-/// @brief Dumps NEW_STRUCT to logs_out
-/// @param strct ptr to NEW_STRUCT
-/// @param NEW_STRUCTName name of NEW_STRUCT
+/// @brief Dumps Tree to logs_out
+/// @param tree ptr to Tree
+/// @param TreeName name of Tree
 /// @param fileName name of file function was called at
 /// @param funcName name of func function was called at
 /// @param line line function was called at
-void NEW_STRUCTDumpInside (NEW_STRUCT* strct, const char* NEW_STRUCTName, const char* fileName, const char* funcName, size_t line);
+void TreeDumpInside (Tree* tree, const char* TreeName, const char* fileName, const char* funcName, size_t line);
 
-/// @brief Prints errors drom a NEW_STRUCT variable
-/// @param strct ptr to NEW_STRUCT
-/// @return error code strct->errCode
-unsigned long long NEW_STRUCTErrCheck (NEW_STRUCT* strct);
+/// @brief Prints errors drom a Tree variable
+/// @param tree ptr to Tree
+/// @return error code tree->errCode
+unsigned long long TreeErrCheck (Tree* tree);
 
-/// @brief Prints errors for a NEW_STRUCTDump func
-/// @param strct ptr to NEW_STRUCT
-void NEW_STRUCTLogPrintErrors (NEW_STRUCT* strct);
+/// @brief Prints errors for a TreeDump func
+/// @param tree ptr to Tree
+void TreeLogPrintErrors (Tree* tree);
 
-/// @brief Counts hash for NEW_STRUCT
-/// @param strct ptr to NEW_STRUCT
-void NEW_STRUCTCountHash (NEW_STRUCT* strct);
+/// @brief Counts hash for Tree
+/// @param tree ptr to Tree
+void TreeCountHash (Tree* tree);
 
-/// @brief Verifies hash for NEW_STRUCT (tells if it was changed without any NEW_STRUCT specified functions)
-/// @param strct ptr to NEW_STRUCT
-void NEW_STRUCTVerifyHash (NEW_STRUCT* strct);
+/// @brief Verifies hash for Tree (tells if it was changed without any Tree specified functions)
+/// @param tree ptr to Tree
+void TreeVerifyHash (Tree* tree);
 
 /// @brief Sets var to a poisoned state
 /// @param var ptr to var
