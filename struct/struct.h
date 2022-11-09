@@ -1,6 +1,6 @@
-#pragma once
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 #include "..\lib\flog.h"
 
 // DEFINE NDEBUG TO DISABLE LOGS
@@ -45,8 +45,17 @@ enum TreeErrorCodes {
     NULL_root_PTR        = 1<<5, ///< NULL ptr for root
     NULL_root_CAN_L_PTR  = 1<<6, ///< NULL ptr for left  root cannary
     NULL_root_CAN_R_PTR  = 1<<7, ///< NULL ptr for right root cannary
-    POISONED_ERRCOD      = 1<<9, ///< Errcod variable is poisoned; Ususally means that struct has been destructed
-    WRONG_HASH           = 1<<10 ///< Hash was changed without any changes from specified function
+    POISONED_ERRCOD      = 1<<8, ///< Errcod variable is poisoned; Ususally means that struct has been destructed
+    WRONG_HASH           = 1<<9 ///< Hash was changed without any changes from specified function
+};
+
+/// @brief Stores a string with links to next elements
+struct Nod {
+
+    char* str   = NULL;
+    Nod*  left  = NULL;
+    Nod*  right = NULL;
+    Nod*  prev  = NULL;
 };
 
 /// @brief Stores a Tree with several support variables
@@ -55,7 +64,7 @@ struct Tree {
     unsigned int  canL      = 0xDEADBEEF; ///< left cannary of struct
     unsigned int  hash      = 0;          ///< hash value
     size_t        errCode   = ok;         ///< error code
-    void*         root      = NULL;       ///< Ptr to root
+    Nod*          root      = NULL;       ///< Ptr to root
     unsigned int* rootCanL  = NULL;       ///< left cannary of root
     unsigned int* rootCanR  = NULL;       ///< right cannary of root
     unsigned int  canR      = 0xD34DB33F; ///< right cannary of struct
@@ -104,3 +113,11 @@ void setPoisonInside (void* var, size_t sizeofVar);
 /// @param sizeofVar size of var
 /// @return 1 if poisoned, 0 if not
 bool isPoisonInside (void* var, size_t sizeofVar);
+
+void NodAddLeft (Nod* nod, char* value = NULL);
+
+void NodAddRight (Nod* nod, char* value = NULL);
+
+void TreeGraphicDump (Tree* tree);
+
+void PrintNod (Nod* nod, int NodNumber, int depth, FILE* picSource, char ranking[][1000]);

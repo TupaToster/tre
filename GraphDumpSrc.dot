@@ -1,0 +1,12 @@
+digraph List_0 {
+	graph [dpi = 100];
+	splines = ortho
+	rankdir = TB
+	"Nod_0" [shape = "record", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00000000 | Value = "" | { <left> Left = 00C015F8 | <right> Right = 00C01610} "]
+	"Nod_0":left -> "Nod_1":prev
+	"Nod_1" [shape = "record", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00C015DC | Value = "" | { <left> Left = 00C01628 | <right> Right = 00000000} "]
+	"Nod_1":left -> "Nod_2":prev
+	"Nod_2" [shape = "record", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00C015F8 | Value = "" | { <left> Left = 00000000 | <right> Right = 00000000} "]
+	"Nod_0":right -> "Nod_2":prev
+	"Nod_2" [shape = "record", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00C015DC | Value = "" | { <left> Left = 00000000 | <right> Right = 00000000} "]
+}

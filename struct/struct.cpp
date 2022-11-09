@@ -1,6 +1,5 @@
 #include "struct.h"
 
-
 void setPoisonInside (void* var, size_t sizeofVar) {
 
     if (var == NULL) return;
@@ -48,20 +47,43 @@ bool isPoisonInside (void* var, size_t sizeofVar) {
     }
 }
 
+void NodCtor (Nod* nod) {
+
+    nod->str   = NULL;
+    nod->left  = NULL;
+    nod->right = NULL;
+    nod->prev  = NULL;
+}
+
+void NodDtorRec (Nod* nod) {
+
+    if (nod->right != NULL) NodDtorRec (nod->right);
+    if (nod->left != NULL) NodDtorRec (nod->left);
+
+    free (nod->str);
+    setPoison (nod->str);
+    setPoison (nod->left);
+    setPoison (nod->right);
+    setPoison (nod->prev);
+    free (nod);
+}
+
 void TreeCtor (Tree* tree) {
 
     tree->canL      = CANL;
     tree->canR      = CANR;
     tree->hash      = 0;
     tree->errCode   = ok;
+    tree->rootCanL  = (unsigned int*) calloc (sizeof (unsigned int) * 2 + sizeof (Nod), 1);
+    tree->root      = (Nod*) (tree->rootCanL + 1);
+    tree->rootCanR  = (unsigned int*) (tree->root + 1);
 
-    //Allocate root and set root cannaries here
+    NodCtor (tree->root);
 
    *tree->rootCanL = CANL;
    *tree->rootCanR = CANR;
 
     TreeCountHash (tree);
-
 }
 
 void TreeDtor (Tree* tree) {
@@ -70,16 +92,16 @@ void TreeDtor (Tree* tree) {
 
     setPoison ( tree->canL      );
     setPoison ( tree->canR      );
-    setPoison (*tree->rootCanL );
-    setPoison (*tree->rootCanR );
-    setPoison ( tree->rootCanL );
-    setPoison ( tree->rootCanR );
+    setPoison (*tree->rootCanL  );
+    setPoison (*tree->rootCanR  );
+    setPoison ( tree->rootCanR  );
     setPoison ( tree->errCode   );
     setPoison ( tree->hash      );
 
-    //Poison root here
+    NodDtorRec (tree->root);
 
     free      ( tree->rootCanL );
+    setPoison ( tree->rootCanL );
     setPoison ( tree->root     );
 }
 
@@ -91,47 +113,120 @@ void TreeDumpInside (Tree* tree, const char* TreeName, const char* fileName, con
     TreeVerifyHash (tree);
 
     if (tree == NULL){
-        flogprintf ( "In file %s, function %s, line %u, Tree named %s is a NULL ptr \n", fileName, funcName, line, TreeName);
+        flogprintf ( "In file %s, function %s, line %u, Tree named %s is a NULL ptr <br>", fileName, funcName, line, TreeName);
         return;
     }
 
-    flogprintf ( "In file %s, function %s, line %u, Tree named %s was dumped : \n", fileName, funcName, line, TreeName);
+    flogprintf ( "In file %s, function %s, line %u, Tree named %s was dumped : <br>", fileName, funcName, line, TreeName);
 
-    flogprintf ( "\t" "Errors : \n");
+    flogprintf ( "<pre>    " "Errors : <br>");
     TreeLogPrintErrors (tree);
 
-                                           flogprintf ( "\t" "hash = %u (", tree->hash);
-    if      ( tree->hash      == POISON4) flogprintf ( "POISONED)\n")
-    else                                   flogprintf ( "ok)\n")
+                                           flogprintf ( "<pre>    " "hash = %u (", tree->hash);
+    if      ( isPoison (tree->hash)) flogprintf ( "POISONED)<br>")
+    else                                   flogprintf ( "ok)<br>")
 
-                                           flogprintf ( "\t" "canL = 0x%X (", tree->canL);
-    if      ( tree->canL      == POISON4) flogprintf ( "POISONED)\n")
-    else if ( tree->canL      == CANL   ) flogprintf ( "ok)\n")
-    else                                   flogprintf ( "NOT_OK)\n")
+                                           flogprintf ( "<pre>    " "canL = 0x%X (", tree->canL);
+    if      ( isPoison (tree->canL)) flogprintf ( "POISONED)<br>")
+    else if ( tree->canL      == CANL   ) flogprintf ( "ok)<br>")
+    else                                   flogprintf ( "NOT_OK)<br>")
 
-                                           flogprintf ( "\t" "canR = 0x%X (", tree->canR);
-    if      ( tree->canR      == POISON4) flogprintf ( "POISONED)\n")
-    else if ( tree->canR      == CANR   ) flogprintf ( "ok)\n")
-    else                                   flogprintf ( "NOT_OK)\n")
+                                           flogprintf ( "<pre>    " "canR = 0x%X (", tree->canR);
+    if      ( isPoison (tree->canR)) flogprintf ( "POISONED)<br>")
+    else if ( tree->canR      == CANR   ) flogprintf ( "ok)<br>")
+    else                                   flogprintf ( "NOT_OK)<br>")
 
-                                          flogprintf ( "\t" "rootCanL = 0x%X (", *tree->rootCanL);
-    if      (*tree->rootCanL == POISON4) flogprintf ( "POISONED)\n")
-    else if (*tree->rootCanL == CANL   ) flogprintf ( "ok)\n")
-    else                                  flogprintf ( "NOT_OK)\n")
+                                          flogprintf ( "<pre>    " "rootCanL = 0x%X (", *tree->rootCanL);
+    if      (isPoison (*tree->rootCanL)) flogprintf ( "POISONED)<br>")
+    else if (*tree->rootCanL == CANL   ) flogprintf ( "ok)<br>")
+    else                                  flogprintf ( "NOT_OK)<br>")
 
-                                          flogprintf ( "\t" "rootCanR = 0x%X (", *tree->rootCanR);
-    if      (*tree->rootCanR == POISON4) flogprintf ( "POISONED)\n")
-    else if (*tree->rootCanR == CANR   ) flogprintf ( "ok)\n")
-    else                                  flogprintf ( "NOT_OK)\n")
+                                          flogprintf ( "<pre>    " "rootCanR = 0x%X (", *tree->rootCanR);
+    if      (isPoison (*tree->rootCanR)) flogprintf ( "POISONED)<br>")
+    else if (*tree->rootCanR == CANR   ) flogprintf ( "ok)<br>")
+    else                                  flogprintf ( "NOT_OK)<br>")
 
-    if ((size_t) tree->root  == POISON4) goto A;
+    if (isPoison (tree->root) or tree->root == NULL) goto A;
 
-    //Dump Data Here
+    TreeGraphicDump (tree);
 
 A:
-    flogprintf ( "\t" "End of root" "\n" "End of dump \n");
+    flogprintf ( "<pre>    " "End of root" "<br>" "End of dump <br>");
 
     TreeCountHash (tree);
+}
+
+void PrintNod (Nod* nod, int NodNumber, int depth, FILE* picSource, char ranking[][1000]) {
+
+    #define picprintf(...) fprintf (picSource, __VA_ARGS__)
+
+    picprintf ("\t" "\"Nod_%d\" [shape = \"record\", style = \"filled\", fillcolor = \"#9feb83\", label = \"{ <prev> Prev = %p | Value = \"%s\" | { <left> Left = %p | <right> Right = %p} \"]\n",
+                NodNumber, nod->prev, nod->str == NULL ? "" : nod->str, nod->left, nod->right);
+
+
+    if (ranking[depth][0] == 0) {
+
+        sprintf (ranking[depth], "{ rank = same; ");
+    }
+
+    sprintf (ranking[depth], "Nod_%d ; ");
+
+    if (nod->left != NULL) {
+
+        picprintf ("\t" "\"Nod_%d\":left -> \"Nod_%d\":prev\n", NodNumber, NodNumber + 1);
+        PrintNod(nod->left, NodNumber + 1, depth + 1, picSource, ranking);
+    }
+    if (nod->right != NULL) {
+
+        picprintf ("\t" "\"Nod_%d\":right -> \"Nod_%d\":prev\n", NodNumber, NodNumber + 2);
+        PrintNod (nod->right, NodNumber + 2, depth + 1, picSource, ranking);
+    }
+
+    #undef picprintf
+}
+
+void TreeGraphicDump (Tree* tree) {
+
+    #define picprintf(...) fprintf (picSource, __VA_ARGS__)
+
+    assert (tree != NULL);
+
+    static int GraphDumpCounter = 0;
+    static char ranking[1000][1000];
+
+    for (int i = 0; i < 1000;i++) ranking[i][0] = '\0';
+
+    char srcName[] = "GraphDumpSrc.dot";
+    char picName[30] = "GraphDumpPic";
+    sprintf (picName, "%d.png", GraphDumpCounter);
+
+    FILE* picSource = fopen (srcName, "w");
+    assert (picSource != NULL);
+
+    picprintf ("digraph List_%d {" "\n", GraphDumpCounter);
+    picprintf ("\t" "graph [dpi = 100];" "\n");
+    picprintf ("\t" "splines = ortho" "\n");
+    picprintf ("\t" "rankdir = TB" "\n");
+
+    PrintNod (tree->root, 0, 0, picSource, ranking);
+
+    picprintf ( "}");
+
+    fclose (picSource);
+
+    char command[100] = "";
+    sprintf (command, "dot -Tpng %s -o %s", srcName, picName);
+
+    system (command);
+
+    flogprintf("<pre>\n");
+    flogprintf("<h2>Tree dump</h2>\n");
+    flogprintf("<img src = \"%s\">\n", picName);
+    flogprintf("<hr>\n");
+
+    GraphDumpCounter++;
+
+    #undef picprintf
 }
 
 unsigned long long TreeErrCheck (Tree* tree) {
@@ -239,5 +334,30 @@ void TreeVerifyHash (Tree* tree) {
         tree->errCode |= WRONG_HASH;
     }
 
-    //flog (tree->hash);
+}
+
+void NodAddLeft (Nod* nod, char* value) {
+
+    assert (nod != NULL);
+    if (nod->left != NULL) return;
+
+    nod->left = (Nod*) calloc (1, sizeof (Nod));
+    assert (nod->left != NULL);
+
+    NodCtor (nod->left);
+    nod->left->prev = nod;
+    nod->left->str  = value;
+}
+
+void NodAddRight (Nod* nod, char* value) {
+
+    assert (nod != NULL);
+    if (nod->right != NULL) return;
+
+    nod->right = (Nod*) calloc (1, sizeof (Nod));
+    assert (nod->right != NULL);
+
+    NodCtor (nod->right);
+    nod->right->prev = nod;
+    nod->right->str  = value;
 }
