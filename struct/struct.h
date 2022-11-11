@@ -32,6 +32,8 @@
 #else
 #define TreeDump(tree) ;
 #endif
+
+#define MAX_RANKS 100
 //endof inside defines
 
 /// @brief Describes errors within Tree
@@ -52,10 +54,11 @@ enum TreeErrorCodes {
 /// @brief Stores a string with links to next elements
 struct Nod {
 
-    char* str   = NULL;
-    Nod*  left  = NULL;
-    Nod*  right = NULL;
-    Nod*  prev  = NULL;
+    int   NodNum = -1;
+    char* str    = NULL;
+    Nod*  left   = NULL;
+    Nod*  right  = NULL;
+    Nod*  prev   = NULL;
 };
 
 /// @brief Stores a Tree with several support variables

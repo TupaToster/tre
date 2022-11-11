@@ -151,35 +151,46 @@ void TreeDumpInside (Tree* tree, const char* TreeName, const char* fileName, con
     TreeGraphicDump (tree);
 
 A:
-    flogprintf ( "<pre>    " "End of root" "<br>" "End of dump <br>");
-
     TreeCountHash (tree);
 }
 
-void PrintNod (Nod* nod, int NodNumber, int depth, FILE* picSource, char ranking[][1000]) {
+void PrintNod (Nod* nod, int* NodNumber, int depth, FILE* picSource, int ranks[][MAX_RANKS + 1]) {
 
     #define picprintf(...) fprintf (picSource, __VA_ARGS__)
 
-    picprintf ("\t" "\"Nod_%d\" [shape = \"record\", style = \"filled\", fillcolor = \"#9feb83\", label = \"{ <prev> Prev = %p | Value = \"%s\" | { <left> Left = %p | <right> Right = %p} \"]\n",
-                NodNumber, nod->prev, nod->str == NULL ? "" : nod->str, nod->left, nod->right);
+    nod->NodNum = *NodNumber;
+    ranks[depth][0]++;
+    ranks[depth][ranks[depth][0]] = *NodNumber;
 
+    picprintf ("\t" "\"Nod_%d\" [shape = \"Mrecord\", style = \"filled\", fillcolor = \"#9feb83\", label = \"{ <prev> Prev = %p | Value = \\\"%s\\\" | { <left> Left = %p | <right> Right = %p} }\"]\n",
+                *NodNumber, nod->prev, nod->str == NULL ? "" : nod->str, nod->left, nod->right);
 
-    if (ranking[depth][0] == 0) {
-
-        sprintf (ranking[depth], "{ rank = same; ");
-    }
-
-    sprintf (ranking[depth], "Nod_%d ; ");
-
+    *NodNumber += 1;
     if (nod->left != NULL) {
 
-        picprintf ("\t" "\"Nod_%d\":left -> \"Nod_%d\":prev\n", NodNumber, NodNumber + 1);
-        PrintNod(nod->left, NodNumber + 1, depth + 1, picSource, ranking);
+        PrintNod(nod->left, NodNumber, depth + 1, picSource, ranks);
     }
     if (nod->right != NULL) {
 
-        picprintf ("\t" "\"Nod_%d\":right -> \"Nod_%d\":prev\n", NodNumber, NodNumber + 2);
-        PrintNod (nod->right, NodNumber + 2, depth + 1, picSource, ranking);
+        PrintNod (nod->right, NodNumber, depth + 1, picSource, ranks);
+    }
+
+    #undef picprintf
+}
+
+void PrintConnections (Nod* nod, FILE* picSource) {
+
+    #define picprintf(...) fprintf (picSource, __VA_ARGS__)
+
+    if (nod->left != NULL) {
+
+        picprintf ("\t" "\"Nod_%d\":left -> \"Nod_%d\";\n", nod->NodNum, nod->left->NodNum);
+        PrintConnections (nod->left, picSource);
+    }
+    if (nod->right != NULL) {
+
+        picprintf ("\t" "\"Nod_%d\":right -> \"Nod_%d\";\n", nod->NodNum, nod->right->NodNum);
+        PrintConnections (nod->right, picSource);
     }
 
     #undef picprintf
@@ -187,14 +198,11 @@ void PrintNod (Nod* nod, int NodNumber, int depth, FILE* picSource, char ranking
 
 void TreeGraphicDump (Tree* tree) {
 
+    static int GraphDumpCounter = 0;
+
     #define picprintf(...) fprintf (picSource, __VA_ARGS__)
 
     assert (tree != NULL);
-
-    static int GraphDumpCounter = 0;
-    static char ranking[1000][1000];
-
-    for (int i = 0; i < 1000;i++) ranking[i][0] = '\0';
 
     char srcName[] = "GraphDumpSrc.dot";
     char picName[30] = "GraphDumpPic";
@@ -205,17 +213,32 @@ void TreeGraphicDump (Tree* tree) {
 
     picprintf ("digraph List_%d {" "\n", GraphDumpCounter);
     picprintf ("\t" "graph [dpi = 100];" "\n");
-    picprintf ("\t" "splines = ortho" "\n");
     picprintf ("\t" "rankdir = TB" "\n");
 
-    PrintNod (tree->root, 0, 0, picSource, ranking);
+    int ranks[MAX_RANKS][MAX_RANKS + 1] = {0};
+    int NodNum = 0;
+    PrintNod (tree->root, &NodNum, 0, picSource, ranks);
+
+    for (int i = 0; i < MAX_RANKS and ranks[i][0] != 0; i++) {
+
+        picprintf ("\t" "{ rank = same; ");
+
+        for (int j = 1; j <= ranks[i][0];j++) {
+
+            picprintf (" Nod_%d; ", ranks[i][j]);
+        }
+
+        picprintf ("}\n");
+    }
+
+    PrintConnections (tree->root, picSource);
 
     picprintf ( "}");
 
     fclose (picSource);
 
     char command[100] = "";
-    sprintf (command, "dot -Tpng %s -o %s", srcName, picName);
+    sprintf (command, "D:\\Graphviz\\bin\\dot.exe -Tpng %s -o %s", srcName, picName);
 
     system (command);
 

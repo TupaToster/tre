@@ -1,12 +1,18 @@
-digraph List_0 {
+digraph List_1 {
 	graph [dpi = 100];
-	splines = ortho
 	rankdir = TB
-	"Nod_0" [shape = "record", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00000000 | Value = "" | { <left> Left = 00C015F8 | <right> Right = 00C01610} "]
-	"Nod_0":left -> "Nod_1":prev
-	"Nod_1" [shape = "record", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00C015DC | Value = "" | { <left> Left = 00C01628 | <right> Right = 00000000} "]
-	"Nod_1":left -> "Nod_2":prev
-	"Nod_2" [shape = "record", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00C015F8 | Value = "" | { <left> Left = 00000000 | <right> Right = 00000000} "]
-	"Nod_0":right -> "Nod_2":prev
-	"Nod_2" [shape = "record", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00C015DC | Value = "" | { <left> Left = 00000000 | <right> Right = 00000000} "]
+	"Nod_0" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00000000 | Value = \"\" | { <left> Left = 008A1600 | <right> Right = 008A1620} }"]
+	"Nod_1" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 008A15DC | Value = \"\" | { <left> Left = 008A2410 | <right> Right = 008A1640} }"]
+	"Nod_2" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 008A1600 | Value = \"\" | { <left> Left = 00000000 | <right> Right = 00000000} }"]
+	"Nod_3" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 008A1600 | Value = \"\" | { <left> Left = 00000000 | <right> Right = 00000000} }"]
+	"Nod_4" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 008A15DC | Value = \"\" | { <left> Left = 00000000 | <right> Right = 008A2430} }"]
+	"Nod_5" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 008A1620 | Value = \"\" | { <left> Left = 00000000 | <right> Right = 00000000} }"]
+	{ rank = same;  Nod_0; }
+	{ rank = same;  Nod_1;  Nod_4; }
+	{ rank = same;  Nod_2;  Nod_3;  Nod_5; }
+	"Nod_0":left -> "Nod_1";
+	"Nod_1":left -> "Nod_2";
+	"Nod_1":right -> "Nod_3";
+	"Nod_0":right -> "Nod_4";
+	"Nod_4":right -> "Nod_5";
 }

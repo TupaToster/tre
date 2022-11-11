@@ -9,7 +9,9 @@ int main (int argc, char* argv[]) {
 
     NodAddLeft (lol.root);
     NodAddRight (lol.root);
-    NodAddLeft (lol.root->left);
+    NodAddRight (lol.root->left);
     TreeDump (lol);
-
+    NodAddLeft (lol.root->left);
+    NodAddRight (lol.root->right);
+    TreeDump (lol);
 }
