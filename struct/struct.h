@@ -117,10 +117,12 @@ void setPoisonInside (void* var, size_t sizeofVar);
 /// @return 1 if poisoned, 0 if not
 bool isPoisonInside (void* var, size_t sizeofVar);
 
-void NodAddLeft (Nod* nod, char* value = NULL);
+void NodAddLeft (Nod* nod, Tree* tree, char* value = NULL);
 
-void NodAddRight (Nod* nod, char* value = NULL);
+void NodAddRight (Nod* nod, Tree* tree, char* value = NULL);
 
 void TreeGraphicDump (Tree* tree);
 
 void PrintNod (Nod* nod, int NodNumber, int depth, FILE* picSource, char ranking[][1000]);
+
+void DataCountHash (Nod* nod, unsigned int* hash, unsigned int* multiplier);

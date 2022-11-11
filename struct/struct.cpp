@@ -58,7 +58,7 @@ void NodCtor (Nod* nod) {
 void NodDtorRec (Nod* nod) {
 
     if (nod->right != NULL) NodDtorRec (nod->right);
-    if (nod->left != NULL) NodDtorRec (nod->left);
+    if (nod->left  != NULL) NodDtorRec (nod->left);
 
     free (nod->str);
     setPoison (nod->str);
@@ -341,8 +341,32 @@ void TreeCountHash (Tree* tree) {
         }
     }
 
+    DataCountHash (tree->root, &newHash, &multiplier);
+
     tree->hash = newHash;
 
+}
+
+void DataCountHash (Nod* nod, unsigned int* hash, unsigned int* multiplier) {
+
+    char* iter = (char*) &(nod->left);
+
+    for (char* iter = (char*)&nod->left; iter < (char*) (&nod->prev + 1);iter++) {
+
+        *hash += *multiplier * (unsigned int)(*iter);
+        *multiplier *= MULT;
+    }
+
+
+
+    for (int i = 0;nod->str != NULL and i < strlen (nod->str); i++) {
+
+        *hash += *multiplier * ((unsigned int)nod->str[i]);
+        *multiplier *= MULT;
+    }
+
+    if (nod->left != NULL) (nod->left, hash, multiplier);
+    if (nod->right != NULL) (nod->right, hash, multiplier);
 }
 
 void TreeVerifyHash (Tree* tree) {
@@ -359,7 +383,9 @@ void TreeVerifyHash (Tree* tree) {
 
 }
 
-void NodAddLeft (Nod* nod, char* value) {
+void NodAddLeft (Nod* nod, Tree* tree, char* value) {
+
+    TreeVerifyHash (tree);
 
     assert (nod != NULL);
     if (nod->left != NULL) return;
@@ -370,9 +396,13 @@ void NodAddLeft (Nod* nod, char* value) {
     NodCtor (nod->left);
     nod->left->prev = nod;
     nod->left->str  = value;
+
+    TreeCountHash (tree);
 }
 
-void NodAddRight (Nod* nod, char* value) {
+void NodAddRight (Nod* nod, Tree* tree, char* value) {
+
+    TreeVerifyHash (tree);
 
     assert (nod != NULL);
     if (nod->right != NULL) return;
@@ -383,4 +413,6 @@ void NodAddRight (Nod* nod, char* value) {
     NodCtor (nod->right);
     nod->right->prev = nod;
     nod->right->str  = value;
+
+    TreeCountHash (tree);
 }

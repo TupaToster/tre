@@ -7,11 +7,12 @@ int main (int argc, char* argv[]) {
 
     TreeCtor (&lol);
 
-    NodAddLeft (lol.root);
-    NodAddRight (lol.root);
-    NodAddRight (lol.root->left);
+
+    NodAddLeft (lol.root, &lol);
+    NodAddRight (lol.root, &lol);
+    NodAddRight (lol.root->left, &lol);
     TreeDump (lol);
-    NodAddLeft (lol.root->left);
-    NodAddRight (lol.root->right);
+    NodAddLeft (lol.root->left, &lol);
+    NodAddRight (lol.root->right, &lol);
     TreeDump (lol);
 }
