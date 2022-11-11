@@ -416,3 +416,110 @@ void NodAddRight (Nod* nod, Tree* tree, char* value) {
 
     TreeCountHash (tree);
 }
+
+void WriteTreeToFile (Tree* tree, char* fileName) {
+
+    assert (tree != NULL);
+    assert (fileName != NULL);
+
+    FILE* outFile = fopen (fileName, "wb");
+    assert (outFile != NULL);
+
+    WriteNodRec (tree->root, outFile);
+
+    fclose (outFile);
+    free (outFile);
+}
+
+void WriteNodRec (Nod* nod, FILE* outFile) {
+
+    if (nod == NULL) return;
+    assert (outFile != NULL);
+
+    #define print(...) fprintf (outFile, __VA_ARGS__)
+
+    if (nod->str != NULL) print ("{<%s>", nod->str);
+    else print ("{<>");
+
+    if (nod->left == NULL) print ("{}");
+    else WriteNodRec (nod->left, outFile);
+
+    if (nod->right == NULL) print ("{}");
+    else WriteNodRec (nod->right, outFile);
+
+    print("}");
+    #undef print
+}
+
+void ReadTreeFromFile (Tree* tree, char* fileName) {
+
+    assert (tree);
+    assert (fileName);
+
+    Text txt = read_Text (fileName);
+
+    Nod* iter = tree->root;
+    bool backFromTheLeft = false;
+
+    for (int i = 1; i < txt.TextSize; i++) {
+
+        if (txt.str[i] == '{') {
+
+            if (txt.str[i + 1] == '}') {
+
+                backFromTheLeft = 1;
+                i++;
+            }
+            else if (backFromTheLeft) {
+
+                NodAddRight (iter, tree);
+                iter = iter->right;
+            }
+            else {
+
+                NodAddLeft (iter, tree);
+                iter = iter->left;
+            }
+        }
+        else if (txt.str[i] == '<') {
+
+            for (int j = 0; i + 1 + j < txt.TextSize; j++) {
+
+                if (txt.str[i + 1 + j] == '>') {
+
+                    if (j != 0) {
+
+                        iter->str = (char*) calloc (j + 1, sizeof (char));
+                        assert (iter->str != NULL);
+
+                        strncpy (iter->str, txt.str + i + 1, j);
+                    }
+                    else {
+
+                        iter->str = NULL;
+                    }
+
+                    i += j + 1;
+                    break;
+                }
+            }
+        }
+        else if (txt.str[i] == '}') {
+
+            if (iter->prev == NULL) break;
+            else if (iter->prev->left == iter) {
+
+                backFromTheLeft = true;
+                iter = iter->prev;
+            }
+            else {
+
+                iter = iter->prev;
+            }
+        }
+    }
+
+    killText (&txt);
+    free (iter);
+}
+

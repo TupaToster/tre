@@ -1,7 +1,9 @@
+#pragma once
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include "..\lib\flog.h"
+#include "..\lib\text.h"
 
 // DEFINE NDEBUG TO DISABLE LOGS
 //Constants to specify Tree element type and element output mode
@@ -126,3 +128,9 @@ void TreeGraphicDump (Tree* tree);
 void PrintNod (Nod* nod, int NodNumber, int depth, FILE* picSource, char ranking[][1000]);
 
 void DataCountHash (Nod* nod, unsigned int* hash, unsigned int* multiplier);
+
+void WriteTreeToFile (Tree* tree, char* fileName);
+
+void WriteNodRec (Nod* nod, FILE* outFile);
+
+void ReadTreeFromFile (Tree* tree, char* fileName);
