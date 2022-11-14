@@ -162,8 +162,8 @@ void PrintNod (Nod* nod, int* NodNumber, int depth, FILE* picSource, int ranks[]
     ranks[depth][0]++;
     ranks[depth][ranks[depth][0]] = *NodNumber;
 
-    picprintf ("\t" "\"Nod_%d\" [shape = \"Mrecord\", style = \"filled\", fillcolor = \"#9feb83\", label = \"{ <prev> Prev = %p | Value = \\\"%s\\\" | { <left> Left = %p | <right> Right = %p} }\"]\n",
-                *NodNumber, nod->prev, nod->str == NULL ? "" : nod->str, nod->left, nod->right);
+    picprintf ("\t" "\"Nod_%d\" [shape = \"Mrecord\", style = \"filled\", fillcolor = \"#9feb83\", label = \"{ <prev> Prev = %p | Current = %p | Value = \\\"%s\\\" | { <left> Left = %p | <right> Right = %p} }\"]\n",
+                *NodNumber, nod->prev, nod, nod->str == NULL ? "" : nod->str, nod->left, nod->right);
 
     *NodNumber += 1;
     if (nod->left != NULL) {
@@ -417,7 +417,7 @@ void NodAddRight (Nod* nod, Tree* tree, char* value) {
     TreeCountHash (tree);
 }
 
-void WriteTreeToFile (Tree* tree, char* fileName) {
+void TreeWriteToFile (Tree* tree, char* fileName) {
 
     assert (tree != NULL);
     assert (fileName != NULL);
@@ -451,7 +451,7 @@ void WriteNodRec (Nod* nod, FILE* outFile) {
     #undef print
 }
 
-void ReadTreeFromFile (Tree* tree, char* fileName) {
+void TreeReadFromFile (Tree* tree, char* fileName) {
 
     assert (tree);
     assert (fileName);
@@ -467,17 +467,20 @@ void ReadTreeFromFile (Tree* tree, char* fileName) {
 
             if (txt.str[i + 1] == '}') {
 
-                backFromTheLeft = 1;
+                if (backFromTheLeft == 1) backFromTheLeft = 0;
+                else backFromTheLeft = 1;
                 i++;
             }
             else if (backFromTheLeft) {
 
                 NodAddRight (iter, tree);
+                backFromTheLeft = 0;
                 iter = iter->right;
             }
             else {
 
                 NodAddLeft (iter, tree);
+                backFromTheLeft = 0;
                 iter = iter->left;
             }
         }
@@ -493,6 +496,7 @@ void ReadTreeFromFile (Tree* tree, char* fileName) {
                         assert (iter->str != NULL);
 
                         strncpy (iter->str, txt.str + i + 1, j);
+                        iter->str[j] = '\0';
                     }
                     else {
 
@@ -514,6 +518,7 @@ void ReadTreeFromFile (Tree* tree, char* fileName) {
             }
             else {
 
+                backFromTheLeft = false;
                 iter = iter->prev;
             }
         }
@@ -523,3 +528,32 @@ void ReadTreeFromFile (Tree* tree, char* fileName) {
     free (iter);
 }
 
+Nod* TreeDFS (Tree* tree, const char* key) {
+
+    Nod* iter = tree->root;
+
+    while (strcmp (iter->str, key) != 0) {
+
+        iter->NodNum = 0;
+
+        if (iter->left == NULL and iter->right == NULL or
+            iter->left == NULL and iter->right->NodNum == 1 or
+            iter->right == NULL and iter->left->NodNum == 1) {
+
+            iter->NodNum = 1;
+            if (iter->prev == NULL) break;
+            else iter = iter->prev;
+        }
+        else if (iter->left != NULL and iter->left->NodNum != 1) {
+
+            iter = iter->left;
+        }
+        else if (iter->right != NULL and (iter->left == NULL or iter->left->NodNum == 1)) {
+
+            iter = iter->right;
+        }
+    }
+
+    if (strcmp (iter->str, key)) return NULL;
+    else return iter;
+}

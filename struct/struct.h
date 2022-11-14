@@ -129,8 +129,14 @@ void PrintNod (Nod* nod, int NodNumber, int depth, FILE* picSource, char ranking
 
 void DataCountHash (Nod* nod, unsigned int* hash, unsigned int* multiplier);
 
-void WriteTreeToFile (Tree* tree, char* fileName);
+void TreeWriteToFile (Tree* tree, char* fileName);
 
 void WriteNodRec (Nod* nod, FILE* outFile);
 
-void ReadTreeFromFile (Tree* tree, char* fileName);
+void TreeReadFromFile (Tree* tree, char* fileName);
+
+Nod* TreeDFS (Tree* tree, const char* key);
+
+void NodCtor (Nod* nod);
+
+void NodDtorRec (Nod* nod);
