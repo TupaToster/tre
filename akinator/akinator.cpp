@@ -28,7 +28,7 @@ void AkinatorPlay (Tree* tree) {
             case 'C':
 
                 printf ("Please insert name of object to define (not longer than %d chars): ", MAX_STATIC_STR_LEN - 1);
-                scanf ("%[^\n\0]", name);
+                scanf ("%c%[^\n\0]", name, name);
                 AkinatorMakeDefinition (tree, name);
             break;
 
@@ -119,5 +119,85 @@ void AkinatorGuess (Tree* tree, Nod* nod) {
 
 void AkinatorMakeDefinition (Tree* tree, char object[MAX_STATIC_STR_LEN]) {
 
-    return;
+    char** definition = (char**) calloc (4, sizeof (char*));
+    bool*  defType    = (bool*) calloc (4, sizeof (bool));
+    int    defIter    = 0;
+    int    defSize    = 4;
+
+    Nod* iter = tree->root;
+
+    while (strcmp (object, iter->str)) {
+
+        iter->NodNum = 0;
+
+        if (iter->left == NULL and iter->right == NULL or
+            iter->left == NULL and iter->right->NodNum == 1 or
+            iter->right == NULL and iter->left->NodNum == 1 or
+            iter->left->NodNum == 1 and iter->right->NodNum == 1) {
+
+            iter->NodNum = 1;
+            defIter--;
+            if (iter->prev == NULL) break;
+            else iter = iter->prev;
+        }
+        else if (iter->left != NULL and iter->left->NodNum != 1) {
+
+            if (defIter == defSize) {
+
+                void* temp = calloc (2 * defSize, sizeof (char*));
+                assert (temp != NULL);
+                memcpy (temp, definition, defSize);
+                definition = (char**) temp;
+                temp = calloc (2*defSize, sizeof (bool));
+                assert (temp != NULL);
+                memcpy (temp, defType, defSize);
+                defType = (bool*) temp;
+                defSize *= 2;
+            }
+            definition[defIter] = iter->str;
+            defType[defIter]    = false;
+            defIter++;
+            iter = iter->left;
+        }
+        else if (iter->right != NULL and (iter->left == NULL or iter->left->NodNum == 1)) {
+
+            if (defIter == defSize) {
+
+                void* temp = calloc (2 * defSize, sizeof (char*));
+                assert (temp != NULL);
+                memcpy (temp, definition, defSize);
+                definition = (char**) temp;
+                temp = calloc (2*defSize, sizeof (bool));
+                assert (temp != NULL);
+                memcpy (temp, defType, defSize);
+                defType = (bool*) temp;
+                defSize *= 2;
+            }
+            definition[defIter] = iter->str;
+            defType[defIter]    = true;
+            defIter++;
+            iter = iter->right;
+        }
+    }
+
+    printf ("%s ", object);
+
+    for (int i = 0; i < defIter - 1; i++) {
+
+        if (defType[i]) printf ("%s, ", definition[i]);
+        else {
+
+            while (definition[i][0] != ' ') printf ("%c", *definition[i]++);
+            printf (" not%s, " , definition[i]);
+        }
+    }
+
+    if (defType[defIter - 1]) printf ("%s." "\n", definition[defIter - 1]);
+    else {
+
+        while (definition[defIter - 1][0] != ' ') printf ("%c", *definition[defIter - 1]++);
+        printf (" not%s." "\n", definition[defIter - 1]);
+    }
+
 }
+

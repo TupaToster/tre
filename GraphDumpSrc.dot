@@ -1,25 +1,34 @@
 digraph List_0 {
 	graph [dpi = 100];
 	rankdir = TB
-	"Nod_0" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00000000 | Current = 00BA15DC | Value = \"is zhivotnoe\" | { <left> Left = 00BA24B0 | <right> Right = 00BA2598} }"]
-	"Nod_1" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00BA15DC | Current = 00BA24B0 | Value = \"is kurator\" | { <left> Left = 00BA24E8 | <right> Right = 00BA2508} }"]
-	"Nod_2" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00BA24B0 | Current = 00BA24E8 | Value = \"Rtshnik\" | { <left> Left = 00000000 | <right> Right = 00000000} }"]
-	"Nod_3" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00BA24B0 | Current = 00BA2508 | Value = \"has long hair\" | { <left> Left = 00BA2540 | <right> Right = 00BA2578} }"]
-	"Nod_4" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00BA2508 | Current = 00BA2540 | Value = \"Leorius Maltz\" | { <left> Left = 00000000 | <right> Right = 00000000} }"]
-	"Nod_5" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00BA2508 | Current = 00BA2578 | Value = \"Yasin\" | { <left> Left = 00000000 | <right> Right = 00000000} }"]
-	"Nod_6" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00BA15DC | Current = 00BA2598 | Value = \"is bidlo\" | { <left> Left = 00BA25D0 | <right> Right = 00BA2600} }"]
-	"Nod_7" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00BA2598 | Current = 00BA25D0 | Value = \"Ded\" | { <left> Left = 00000000 | <right> Right = 00000000} }"]
-	"Nod_8" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00BA2598 | Current = 00BA2600 | Value = \"Maks\" | { <left> Left = 00000000 | <right> Right = 00000000} }"]
+	"Nod_0" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00000000 | Current = 00C715DC | Value = \"is zhivotnoe\" | { <left> Left = 00C724E0 | <right> Right = 00C72638} }"]
+	"Nod_1" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00C715DC | Current = 00C724E0 | Value = \"is kurator\" | { <left> Left = 00C72518 | <right> Right = 00C72538} }"]
+	"Nod_2" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00C724E0 | Current = 00C72518 | Value = \"Rtshnik\" | { <left> Left = 00000000 | <right> Right = 00000000} }"]
+	"Nod_3" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00C724E0 | Current = 00C72538 | Value = \"has long hair\" | { <left> Left = 00C72570 | <right> Right = 00C72608} }"]
+	"Nod_4" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00C72538 | Current = 00C72570 | Value = \"is big\" | { <left> Left = 00C725A0 | <right> Right = 00C725D8} }"]
+	"Nod_5" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00C72570 | Current = 00C725A0 | Value = \"Leorius Maltz\" | { <left> Left = 00000000 | <right> Right = 00000000} }"]
+	"Nod_6" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00C72570 | Current = 00C725D8 | Value = \"Seriy\" | { <left> Left = 00000000 | <right> Right = 00000000} }"]
+	"Nod_7" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00C72538 | Current = 00C72608 | Value = \"Yasin\" | { <left> Left = 00000000 | <right> Right = 00000000} }"]
+	"Nod_8" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00C715DC | Current = 00C72638 | Value = \"is bidlo\" | { <left> Left = 00C72670 | <right> Right = 00C726A0} }"]
+	"Nod_9" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00C72638 | Current = 00C72670 | Value = \"Ded\" | { <left> Left = 00000000 | <right> Right = 00000000} }"]
+	"Nod_10" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00C72638 | Current = 00C726A0 | Value = \"is smarter than Maks\" | { <left> Left = 00C726E0 | <right> Right = 00C72710} }"]
+	"Nod_11" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00C726A0 | Current = 00C726E0 | Value = \"Maks\" | { <left> Left = 00000000 | <right> Right = 00000000} }"]
+	"Nod_12" [shape = "Mrecord", style = "filled", fillcolor = "#9feb83", label = "{ <prev> Prev = 00C726A0 | Current = 00C72710 | Value = \"Arsenich\" | { <left> Left = 00000000 | <right> Right = 00000000} }"]
 	{ rank = same;  Nod_0; }
-	{ rank = same;  Nod_1;  Nod_6; }
-	{ rank = same;  Nod_2;  Nod_3;  Nod_7;  Nod_8; }
-	{ rank = same;  Nod_4;  Nod_5; }
+	{ rank = same;  Nod_1;  Nod_8; }
+	{ rank = same;  Nod_2;  Nod_3;  Nod_9;  Nod_10; }
+	{ rank = same;  Nod_4;  Nod_7;  Nod_11;  Nod_12; }
+	{ rank = same;  Nod_5;  Nod_6; }
 	"Nod_0":left -> "Nod_1";
 	"Nod_1":left -> "Nod_2";
 	"Nod_1":right -> "Nod_3";
 	"Nod_3":left -> "Nod_4";
-	"Nod_3":right -> "Nod_5";
-	"Nod_0":right -> "Nod_6";
-	"Nod_6":left -> "Nod_7";
-	"Nod_6":right -> "Nod_8";
+	"Nod_4":left -> "Nod_5";
+	"Nod_4":right -> "Nod_6";
+	"Nod_3":right -> "Nod_7";
+	"Nod_0":right -> "Nod_8";
+	"Nod_8":left -> "Nod_9";
+	"Nod_8":right -> "Nod_10";
+	"Nod_10":left -> "Nod_11";
+	"Nod_10":right -> "Nod_12";
 }

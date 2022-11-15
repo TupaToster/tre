@@ -538,7 +538,8 @@ Nod* TreeDFS (Tree* tree, const char* key) {
 
         if (iter->left == NULL and iter->right == NULL or
             iter->left == NULL and iter->right->NodNum == 1 or
-            iter->right == NULL and iter->left->NodNum == 1) {
+            iter->right == NULL and iter->left->NodNum == 1 or
+            iter->left->NodNum == 1 and iter->right->NodNum == 1) {
 
             iter->NodNum = 1;
             if (iter->prev == NULL) break;
