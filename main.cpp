@@ -8,6 +8,10 @@ int main (int argc, char* argv[]) {
     TreeCtor (&lol);
 
     TreeReadFromFile (&lol, "lol.save");
+
+    // Nod* temp = TreeLCA (&lol, TreeDFS (&lol, lol.root, "Ded"), TreeDFS (&lol, lol.root, "Maks"));
+    // printf ("%s", temp->str);
+    // return 0;
     AkinatorPlay (&lol);
     TreeDump(lol);
     return 0;

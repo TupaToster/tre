@@ -6,12 +6,6 @@
 #include "..\lib\text.h"
 
 // DEFINE NDEBUG TO DISABLE LOGS
-//Constants to specify Tree element type and element output mode
-
-#define ELEM_TYPE int ///< Type of element a Tree operates with
-#define OUT_FORM "%d" ///< Output format for printf functions
-
-//end of block
 
 //inside defines
 
@@ -39,7 +33,7 @@
 //endof inside defines
 
 /// @brief Describes errors within Tree
-enum TreeErrorCodes {
+enum ErrorCodes {
     ok                   = 0,    ///< All ok
     POISON_ACCESS        = 1<<0, ///< One or more struct elements is poison
     BAD_CAN_L            = 1<<1, ///< Dead left cannary of structure
@@ -49,8 +43,8 @@ enum TreeErrorCodes {
     NULL_root_PTR        = 1<<5, ///< NULL ptr for root
     NULL_root_CAN_L_PTR  = 1<<6, ///< NULL ptr for left  root cannary
     NULL_root_CAN_R_PTR  = 1<<7, ///< NULL ptr for right root cannary
-    POISONED_ERRCOD      = 1<<8, ///< Errcod variable is poisoned; Ususally means that struct has been destructed
-    WRONG_HASH           = 1<<9 ///< Hash was changed without any changes from specified function
+    POISONED_ERRCOD      = 1<<9, ///< Errcod variable is poisoned; Ususally means that struct has been destructed
+    WRONG_HASH           = 1<<10 ///< Hash was changed without any changes from specified function
 };
 
 /// @brief Stores a string with links to next elements
@@ -135,8 +129,10 @@ void WriteNodRec (Nod* nod, FILE* outFile);
 
 void TreeReadFromFile (Tree* tree, char* fileName);
 
-Nod* TreeDFS (Tree* tree, const char* key);
-
 void NodCtor (Nod* nod);
 
 void NodDtorRec (Nod* nod);
+
+Nod* TreeDFS (Tree* tree, Nod* nod, const char* key);
+
+Nod* TreeLCA (Tree* tree, Nod* fst, Nod* scd);

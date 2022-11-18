@@ -17,6 +17,7 @@ a.exe: $(OBJ) $(HEADS)
 clean:
 	rm -rf *.o *.exe*
 	rm -rf struct/*.o struct/*.exe*
+	rm -rf akinator/*.o akinator/*.exe*
 	rm -rf lib/*.o lib/*.exe*
 	rm -rf *.png *.dot
 	clear

@@ -15,8 +15,8 @@ void flogIntern (const void* val, const char* varType, const char* varName, size
             if (logOutf == NULL){                                                                 \
                 logOutf = fopen ("logs_out.htm", "w");                                            \
                 setvbuf (logOutf, NULL, _IONBF, 0);                                               \
-                fprintf (logOutf, "----------------------------------------<br>"                    \
-                "Logging session at compiled time : %s %s<br><br>", __TIME__, __DATE__);              \
+                fprintf (logOutf, "----------------------------------------<br>"                  \
+                "Logging session at compiled time : %s %s<br><br>", __TIME__, __DATE__);          \
             }                                                                                     \
             flogIntern (&a, typeid (a).name (), #a, sizeof (a), __FILE__, __FUNCTION__, __LINE__)
 
@@ -24,12 +24,11 @@ void flogIntern (const void* val, const char* varType, const char* varName, size
     {if (logOutf == NULL){                                                                        \
                 logOutf = fopen ("logs_out.htm", "w");                                            \
                 setvbuf (logOutf, NULL, _IONBF, 0);                                               \
-                fprintf (logOutf, "----------------------------------------<br>"                    \
-                "Logging session at compiled time : %s %s<br><br>", __TIME__, __DATE__);              \
+                fprintf (logOutf, "----------------------------------------<br>"                  \
+                "Logging session at compiled time : %s %s<br><br>", __TIME__, __DATE__);          \
     }                                                                                             \
     fprintf (logOutf, __VA_ARGS__);}
 
 #ifdef NDEBUG
 #define flog(a) ;
-#define flogFileInit ;
 #endif

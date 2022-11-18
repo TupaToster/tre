@@ -528,33 +528,34 @@ void TreeReadFromFile (Tree* tree, char* fileName) {
     free (iter);
 }
 
-Nod* TreeDFS (Tree* tree, const char* key) {
+Nod* TreeDFS (Tree* tree, Nod* nod, const char* key) {
 
-    Nod* iter = tree->root;
+    if (nod == NULL) return NULL;
+    nod->NodNum = (nod->prev == NULL ? 1 : nod->prev->NodNum + 1);
+    if (key != NULL and strcmp (nod->str, key) == 0) return nod;
+    Nod* lft = TreeDFS (tree, nod->left, key);
+    if (lft != NULL) return lft;
+    Nod* rgt = TreeDFS (tree, nod->right, key);
+    return rgt;
+}
 
-    while (strcmp (iter->str, key) != 0) {
+Nod* TreeLCA (Tree* tree, Nod* fst, Nod* scd) {
 
-        iter->NodNum = 0;
+    TreeDFS (tree, tree->root, NULL);
+    if (fst->NodNum > scd->NodNum) {
 
-        if (iter->left == NULL and iter->right == NULL or
-            iter->left == NULL and iter->right->NodNum == 1 or
-            iter->right == NULL and iter->left->NodNum == 1 or
-            iter->left->NodNum == 1 and iter->right->NodNum == 1) {
-
-            iter->NodNum = 1;
-            if (iter->prev == NULL) break;
-            else iter = iter->prev;
-        }
-        else if (iter->left != NULL and iter->left->NodNum != 1) {
-
-            iter = iter->left;
-        }
-        else if (iter->right != NULL and (iter->left == NULL or iter->left->NodNum == 1)) {
-
-            iter = iter->right;
-        }
+        Nod* tmp = fst;
+        fst = scd;
+        scd = tmp;
     }
 
-    if (strcmp (iter->str, key)) return NULL;
-    else return iter;
+    while (scd->NodNum > fst->NodNum) scd = scd->prev;
+
+    while (scd != fst) {
+
+        scd = scd->prev;
+        fst = fst->prev;
+    }
+
+    return fst;
 }
