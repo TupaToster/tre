@@ -129,7 +129,7 @@ void WriteNodRec (Nod* nod, FILE* outFile);
 
 void TreeReadFromFile (Tree* tree, char* fileName);
 
-void NodCtor (Nod* nod);
+Nod* NodCtor (Nod* prev = NULL, const char* str = NULL, Nod* left = NULL, Nod* right = NULL);
 
 void NodDtorRec (Nod* nod);
 

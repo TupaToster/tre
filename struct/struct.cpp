@@ -47,12 +47,23 @@ bool isPoisonInside (void* var, size_t sizeofVar) {
     }
 }
 
-void NodCtor (Nod* nod) {
+Nod* NodCtor (Nod* prev, const char* str, Nod* left, Nod* right) {
 
-    nod->str   = NULL;
-    nod->left  = NULL;
-    nod->right = NULL;
-    nod->prev  = NULL;
+    Nod* nod = (Nod*) calloc (1, sizeof (Nod));
+    assert (nod != NULL);
+
+    if (str != NULL) {
+
+        nod->str = (char*) calloc (strlen (str) + 1, sizeof (char));
+        assert (nod->str != NULL);
+        strcpy (nod->str, str);
+    }
+    else nod->str = NULL;
+    nod->prev  = prev;
+    nod->left  = left;
+    nod->right = right;
+
+    return nod;
 }
 
 void NodDtorRec (Nod* nod) {
@@ -78,7 +89,7 @@ void TreeCtor (Tree* tree) {
     tree->root      = (Nod*) (tree->rootCanL + 1);
     tree->rootCanR  = (unsigned int*) (tree->root + 1);
 
-    NodCtor (tree->root);
+    tree->root = NodCtor ();
 
    *tree->rootCanL = CANL;
    *tree->rootCanR = CANR;
@@ -390,12 +401,7 @@ void NodAddLeft (Nod* nod, Tree* tree, char* value) {
     assert (nod != NULL);
     if (nod->left != NULL) return;
 
-    nod->left = (Nod*) calloc (1, sizeof (Nod));
-    assert (nod->left != NULL);
-
-    NodCtor (nod->left);
-    nod->left->prev = nod;
-    nod->left->str  = value;
+    nod->left = NodCtor (nod, value);
 
     TreeCountHash (tree);
 }
@@ -407,12 +413,7 @@ void NodAddRight (Nod* nod, Tree* tree, char* value) {
     assert (nod != NULL);
     if (nod->right != NULL) return;
 
-    nod->right = (Nod*) calloc (1, sizeof (Nod));
-    assert (nod->right != NULL);
-
-    NodCtor (nod->right);
-    nod->right->prev = nod;
-    nod->right->str  = value;
+    nod->right = NodCtor (nod, value);
 
     TreeCountHash (tree);
 }

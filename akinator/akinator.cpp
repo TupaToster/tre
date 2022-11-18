@@ -105,16 +105,10 @@ void AkinatorGuess (Tree* tree, Nod* nod) {
             char feature[MAX_STATIC_STR_LEN] = {0};
             scanf ("%c%[^\n\0]%*c", feature, feature);
 
-            Nod* newNod = (Nod*) calloc (1, sizeof (Nod));
-            NodCtor (newNod);
+            Nod* newNod = NodCtor (nod->prev, feature, nod);
             if (nod->prev->left == nod) nod->prev->left = newNod;
             else nod->prev->right = newNod;
-            newNod->prev = nod->prev;
-            newNod->left = nod;
             nod->prev = newNod;
-            newNod->str = (char*) calloc (strlen (feature) + 1, sizeof (char));
-            assert (newNod->str != NULL);
-            strcpy (newNod->str, feature);
 
             printf ("And now please be kind to name your subject (again not longer than %d chars): ", MAX_STATIC_STR_LEN - 1);
             scanf ("%[^\n\0]%*c", feature);
