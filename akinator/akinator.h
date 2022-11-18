@@ -8,8 +8,10 @@
 
 void AkinatorPlay (Tree* tree);
 
-void AkinatorGuess (Tree* tree, Nod* nod);
+void AkinatorGuess (Tree* tree);
 
 void AkinatorMakeDefinition (Tree* tree, char name[MAX_STATIC_STR_LEN]);
 
 void AkinatorShowDifference (Tree* tree, char object1[MAX_STATIC_STR_LEN], char object2[MAX_STATIC_STR_LEN]);
+
+void AkinatorPrintDefinition (Tree* tree, Nod* nod, int startRank = 0);

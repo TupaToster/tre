@@ -6,7 +6,6 @@ int main (int argc, char* argv[]) {
     Tree lol = {};
 
     TreeCtor (&lol);
-
     TreeReadFromFile (&lol, "lol.save");
 
     // Nod* temp = TreeLCA (&lol, TreeDFS (&lol, lol.root, "Ded"), TreeDFS (&lol, lol.root, "Maks"));

@@ -24,7 +24,7 @@ void AkinatorPlay (Tree* tree) {
         switch (command) {
 
             case 'L':
-                AkinatorGuess (tree, tree->root);
+                AkinatorGuess (tree);
             break;
 
             case 'C':
@@ -65,9 +65,11 @@ void AkinatorPlay (Tree* tree) {
     }
 }
 
-void AkinatorGuess (Tree* tree, Nod* nod) {
+void AkinatorGuess (Tree* tree) {
 
-    if (nod->right != NULL and nod->left != NULL) {
+    Nod* nod = tree->root;
+
+    while (nod->left != NULL or nod->right != NULL) {
 
         printf ("Your subject %s?" "\n"
                 "[y/n] : ", nod->str);
@@ -75,67 +77,51 @@ void AkinatorGuess (Tree* tree, Nod* nod) {
         char answer = '\0';
         scanf ("%c%*c", &answer);
 
-        if (answer == 'y') AkinatorGuess (tree, nod->right);
-        else if (answer == 'n') AkinatorGuess (tree, nod->left);
+        if (answer == 'y') nod = nod->right;
+        else if (answer == 'n') nod = nod->left;
         else {
 
             printf ("I'll consider it a no" "\n");
-            AkinatorGuess (tree, nod->left);
+            nod = nod->left;
         }
     }
-    else {
 
-        printf ("Your subject is %s?" "\n"
-                "[y/n] : ", nod->str);
-        char answer = '\0';
-        scanf ("%c%*c", &answer);
+    printf ("Your subject is %s?" "\n"
+            "[y/n] : ", nod->str);
 
-        if (answer == 'y') {
+    char answer = '\0';
+    scanf ("%c%*c", &answer);
 
-            printf ("Akinator always wins!" "\n");
-            return;
-        }
-        else if (answer == 'n') {
+    if (answer == 'y') printf ("Akinator always wins!" "\n");
+    else if (answer == 'n') {
 
-            printf ("No fucking way! Please let me know what or who it is!" "\n"
-                    "Insert a distinctive feature of your subject to distinguish it from my guess in format (please not longer than %d chars):" "\n"
-                    "Your subject \"the feature\"?" "\n"
-                    ": ", MAX_STATIC_STR_LEN - 1);
+        printf ("No fucking way! Please let me know what or who it is!" "\n"
+                "Insert a distinctive feature of your subject to distinguish it from my guess in format \"is/was/has or any other verb + <feature>\", "
+                "example: \"has grey hair\". (please not longer than %d chars): " "\n", MAX_STATIC_STR_LEN - 1);
 
-            char feature[MAX_STATIC_STR_LEN] = {0};
-            scanf ("%c%[^\n\0]%*c", feature, feature);
+        char feature[MAX_STATIC_STR_LEN] = {0};
+        scanf ("%[^\n\0]%*c", feature, feature);
 
-            Nod* newNod = NodCtor (nod->prev, feature, nod);
-            if (nod->prev->left == nod) nod->prev->left = newNod;
-            else nod->prev->right = newNod;
-            nod->prev = newNod;
+        Nod* newNod = NodCtor (nod->prev, feature, nod);
+        if (nod->prev->left == nod) nod->prev->left = newNod;
+        else nod->prev->right = newNod;
+        nod->prev = newNod;
 
-            printf ("And now please be kind to name your subject (again not longer than %d chars): ", MAX_STATIC_STR_LEN - 1);
-            scanf ("%[^\n\0]%*c", feature);
+        printf ("And now please be kind to name your subject (again not longer than %d chars): ", MAX_STATIC_STR_LEN - 1);
+        scanf ("%[^\n\0]%*c", feature);
 
-            NodAddRight (newNod, tree);
-            newNod->right->str = (char*) calloc (strlen (feature) + 1, sizeof (char));
-            assert (newNod->right->str != NULL);
-            strcpy (newNod->right->str, feature);
+        NodAddRight (newNod, tree);
+        newNod->right->str = (char*) calloc (strlen (feature) + 1, sizeof (char));
+        assert (newNod->right->str != NULL);
+        strcpy (newNod->right->str, feature);
 
-            return;
-        }
     }
+
 }
 
-void AkinatorMakeDefinition (Tree* tree, char name[MAX_STATIC_STR_LEN]) {
+void AkinatorPrintDefinition (Tree* tree, Nod* nod, int startRank) {
 
-    Nod* nod = NULL;
-
-    nod = TreeDFS (tree, tree->root, name);
-
-    if (nod == NULL) {
-
-        printf ("This object does not exist in the tree" "\n");
-        return;
-    }
-
-    int size = nod->NodNum;
+    int size = nod->NodNum - startRank;
     char** def = (char**) calloc (size, sizeof (char*));
     assert (def != NULL);
     char*   defType = (char*) calloc (size, sizeof (char));
@@ -177,6 +163,21 @@ void AkinatorMakeDefinition (Tree* tree, char name[MAX_STATIC_STR_LEN]) {
     free (defType);
 }
 
+void AkinatorMakeDefinition (Tree* tree, char name[MAX_STATIC_STR_LEN]) {
+
+    Nod* nod = NULL;
+
+    nod = TreeDFS (tree, tree->root, name);
+
+    if (nod == NULL) {
+
+        printf ("This object does not exist in the tree" "\n");
+        return;
+    }
+
+    AkinatorPrintDefinition (tree, nod);
+}
+
 void AkinatorShowDifference (Tree* tree, char object1[MAX_STATIC_STR_LEN], char object2[MAX_STATIC_STR_LEN]) {
 
     Nod* nod1 = TreeDFS (tree, tree->root, object1);
@@ -191,47 +192,5 @@ void AkinatorShowDifference (Tree* tree, char object1[MAX_STATIC_STR_LEN], char 
     Nod* LCA = TreeLCA (tree, nod1, nod2);
     AkinatorMakeDefinition (tree, nod1->str);
 
-    printf ("But %s is different in next categories :" "\n", nod2->str);
-
-    int size = nod2->NodNum - LCA->NodNum + 1;
-    char** def = (char**) calloc (size, sizeof (char*));
-    assert (def != NULL);
-    char*   defType = (char*) calloc (size, sizeof (char));
-    assert (defType != NULL);
-
-    for (int i = 0; nod2 != LCA and i < size; i++) {
-
-        def[i] = nod2->str;
-        if (nod2->prev->right == nod2) defType[i + 1] = 1;
-        else defType[i + 1] = 0;
-
-        nod2 = nod2->prev;
-    }
-
-    def[size - 1] = LCA->str;
-
-    printf ("%s ", def[0]);
-
-    for (int i = size - 1; i > 1; i--) {
-
-        if (defType[i]) printf ("%s, ", def[i]);
-        else {
-
-            while (isalpha (def[i][0])) printf ("%c", *def[i]++);
-            printf (" not%s, ", def[i]);
-        }
-    }
-
-    if (defType[1]) printf ("%s." "\n", def[1]);
-    else {
-
-        while (isalpha (def[1][0])) printf ("%c", *def[1]++);
-        printf (" not%s." "\n", def[1]);
-    }
-
-    memset (def, 0, size * sizeof (char*));
-    free (def);
-    memset (defType, 0, size * sizeof (char));
-    free (defType);
-
+    AkinatorPrintDefinition (tree, nod2, LCA->NodNum - 1);
 }

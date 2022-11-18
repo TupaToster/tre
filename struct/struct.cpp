@@ -223,7 +223,7 @@ void TreeGraphicDump (Tree* tree) {
     assert (picSource != NULL);
 
     picprintf ("digraph List_%d {" "\n", GraphDumpCounter);
-    picprintf ("\t" "graph [dpi = 100];" "\n");
+    picprintf ("\t" "graph [dpi = 300];" "\n");
     picprintf ("\t" "rankdir = TB" "\n");
 
     int ranks[MAX_RANKS][MAX_RANKS + 1] = {0};
@@ -248,14 +248,14 @@ void TreeGraphicDump (Tree* tree) {
 
     fclose (picSource);
 
-    char command[100] = "";
+    char command[200] = "";
     sprintf (command, "D:\\Graphviz\\bin\\dot.exe -Tpng %s -o %s", srcName, picName);
 
     system (command);
 
     flogprintf("<pre>\n");
     flogprintf("<h2>Tree dump</h2>\n");
-    flogprintf("<img src = \"%s\">\n", picName);
+    flogprintf("<img src = \"%s\" style = \"width: 55%%; height: auto\"/>\n", picName);
     flogprintf("<hr>\n");
 
     GraphDumpCounter++;
@@ -457,8 +457,9 @@ void TreeReadFromFile (Tree* tree, char* fileName) {
     assert (tree);
     assert (fileName);
 
-    Text txt = read_Text (fileName);
+    TreeVerifyHash (tree);
 
+    Text txt = read_Text (fileName);
     Nod* iter = tree->root;
     bool backFromTheLeft = false;
 
@@ -527,6 +528,9 @@ void TreeReadFromFile (Tree* tree, char* fileName) {
 
     killText (&txt);
     free (iter);
+
+    tree->errCode -= WRONG_HASH;
+    TreeCountHash (tree);
 }
 
 Nod* TreeDFS (Tree* tree, Nod* nod, const char* key) {
